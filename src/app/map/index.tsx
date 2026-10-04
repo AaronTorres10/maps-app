@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-const MapsApp = () => {
+const MapScreen = () => {
   return (
     <View>
-      <Text>MapsApp</Text>
+      <Text>MapScreen</Text>
     </View>
   );
 };
 
-export default MapsApp;
+export default MapScreen;
