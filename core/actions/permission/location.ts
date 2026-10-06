@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import { Alert, Linking } from "react-native";
 import { PermissionStatus } from "../../../infrastructure/interfaces/location";
 
 export const requestLocationPermission =
@@ -31,4 +32,21 @@ export const checkLocationPermission = async () => {
   }
 };
 
-const manualPermissionRequest = async () => {};
+const manualPermissionRequest = async () => {
+  Alert.alert(
+    "Permiso de ubicación necesario",
+    "Para continuar debe habilitar el permiso de Localizacion en los ajustes de la app",
+    [
+      {
+        text: "Abrir ajustes",
+        onPress: () => {
+          Linking.openSettings();
+        },
+      },
+      {
+        text: "Canecel",
+        style: "destructive",
+      },
+    ],
+  );
+};
