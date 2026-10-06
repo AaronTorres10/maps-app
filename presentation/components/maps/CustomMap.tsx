@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 import MapView from "react-native-maps";
 import { LatLng } from "../../../core/actions/location/lat-lng";
+import { useLocationStore } from "../../store/useLocationStore";
 
 interface Props extends ViewProps {
   showUserLocation?: boolean;
@@ -12,6 +14,15 @@ const CustomMap = ({
   showUserLocation = true,
   ...rest
 }: Props) => {
+  const { watchLocation, clearWatchLocation } = useLocationStore();
+
+  useEffect(() => {
+    watchLocation();
+    return () => {
+      clearWatchLocation();
+    };
+  }, []);
+
   return (
     <View {...rest}>
       <MapView
