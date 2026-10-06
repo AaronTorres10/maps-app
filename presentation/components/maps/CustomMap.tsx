@@ -3,6 +3,7 @@ import { StyleSheet, View, ViewProps } from "react-native";
 import MapView from "react-native-maps";
 import { LatLng } from "../../../core/actions/location/lat-lng";
 import { useLocationStore } from "../../store/useLocationStore";
+import FAB from "../shared/FAB";
 
 interface Props extends ViewProps {
   showUserLocation?: boolean;
@@ -49,6 +50,14 @@ const CustomMap = ({
           longitude: initialLocation.longitude,
           latitudeDelta: 0.03,
           longitudeDelta: 0.03,
+        }}
+      />
+      <FAB
+        iconName="add-circle-outline"
+        onPress={() => {}}
+        style={{
+          bottom: 20,
+          right: 20,
         }}
       />
     </View>
