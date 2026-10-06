@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 import MapView from "react-native-maps";
 import { LatLng } from "../../../core/actions/location/lat-lng";
@@ -16,7 +16,10 @@ const CustomMap = ({
   ...rest
 }: Props) => {
   const mapRef = useRef<MapView>(null);
-  const { watchLocation, clearWatchLocation, lastKnowLocation } =
+
+  const [isFollowingUser, setIsFollowingUser] = useState(true);
+
+  const { watchLocation, clearWatchLocation, lastKnowLocation, getLocation } =
     useLocationStore();
 
   useEffect(() => {
@@ -27,10 +30,10 @@ const CustomMap = ({
   }, []);
 
   useEffect(() => {
-    if (lastKnowLocation) {
+    if (lastKnowLocation && isFollowingUser) {
       moveCamaraToLocation(lastKnowLocation);
     }
-  }, [lastKnowLocation]);
+  }, [lastKnowLocation, isFollowingUser]);
 
   const moveCamaraToLocation = (LatLng: LatLng) => {
     if (!mapRef.current) return;
@@ -38,11 +41,22 @@ const CustomMap = ({
       center: LatLng,
     });
   };
+  const moveToCurrentLocation = async () => {
+    if (!lastKnowLocation) {
+      moveCamaraToLocation(initialLocation);
+    } else {
+      moveCamaraToLocation(lastKnowLocation);
+    }
+    const Location = await getLocation();
+    if (!location) return;
+    moveCamaraToLocation(Location);
+  };
 
   return (
     <View {...rest}>
       <MapView
         ref={mapRef}
+        onTouchStart={() => setIsFollowingUser(false)}
         showsUserLocation={showUserLocation}
         style={styles.map}
         initialRegion={{
@@ -53,8 +67,16 @@ const CustomMap = ({
         }}
       />
       <FAB
-        iconName="add-circle-outline"
-        onPress={() => {}}
+        iconName={isFollowingUser ? "walk-outline" : "accessibility-outline"}
+        onPress={() => setIsFollowingUser(!isFollowingUser)}
+        style={{
+          bottom: 80,
+          right: 20,
+        }}
+      />
+      <FAB
+        iconName="compass-outline"
+        onPress={moveToCurrentLocation}
         style={{
           bottom: 20,
           right: 20,
