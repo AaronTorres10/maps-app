@@ -13,16 +13,8 @@ const MapScreen = () => {
           latitudeDelta: 0.03,
           longitudeDelta: 0.03,
         }}
-      >
-        <Marker
-          coordinate={{
-            latitude: 21.141125,
-            longitude: -98.416481,
-          }}
-          title="Aquí Estoy"
-          description="Esta es mi casa por algún lado de Huejutla"
         />
-      </MapView>
+  
     </View>
   );
 };
