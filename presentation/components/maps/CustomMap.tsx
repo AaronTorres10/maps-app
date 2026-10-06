@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 import MapView from "react-native-maps";
 import { LatLng } from "../../../core/actions/location/lat-lng";
@@ -14,7 +14,9 @@ const CustomMap = ({
   showUserLocation = true,
   ...rest
 }: Props) => {
-  const { watchLocation, clearWatchLocation } = useLocationStore();
+  const mapRef = useRef<MapView>(null);
+  const { watchLocation, clearWatchLocation, lastKnowLocation } =
+    useLocationStore();
 
   useEffect(() => {
     watchLocation();
@@ -23,9 +25,23 @@ const CustomMap = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (lastKnowLocation) {
+      moveCamaraToLocation(lastKnowLocation);
+    }
+  }, [lastKnowLocation]);
+
+  const moveCamaraToLocation = (LatLng: LatLng) => {
+    if (!mapRef.current) return;
+    mapRef.current.animateCamera({
+      center: LatLng,
+    });
+  };
+
   return (
     <View {...rest}>
       <MapView
+        ref={mapRef}
         showsUserLocation={showUserLocation}
         style={styles.map}
         initialRegion={{
