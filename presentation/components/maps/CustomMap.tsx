@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { Polyline } from "react-native-maps";
 import { LatLng } from "../../../core/actions/location/lat-lng";
 import { useLocationStore } from "../../store/useLocationStore";
 import FAB from "../shared/FAB";
@@ -18,9 +18,15 @@ const CustomMap = ({
   const mapRef = useRef<MapView>(null);
 
   const [isFollowingUser, setIsFollowingUser] = useState(true);
+  const [isShowPolyline, setIsShowPolyline] = useState(true);
 
-  const { watchLocation, clearWatchLocation, lastKnowLocation, getLocation } =
-    useLocationStore();
+  const {
+    watchLocation,
+    clearWatchLocation,
+    lastKnowLocation,
+    getLocation,
+    userLocationlist,
+  } = useLocationStore();
 
   useEffect(() => {
     watchLocation();
@@ -64,6 +70,22 @@ const CustomMap = ({
           longitude: initialLocation.longitude,
           latitudeDelta: 0.03,
           longitudeDelta: 0.03,
+        }}
+      >
+        {isShowPolyline && (
+          <Polyline
+            coordinates={userLocationlist}
+            strokeColor={"black"}
+            strokeWidth={6}
+          />
+        )}
+      </MapView>
+      <FAB
+        iconName={isShowPolyline ? "eye-outline" : "eye-off-outline"}
+        onPress={() => setIsShowPolyline(!isShowPolyline)}
+        style={{
+          bottom: 140,
+          right: 20,
         }}
       />
       <FAB
